@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(perception_stack)
+project(space_interface)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,30 +7,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(rclpy REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
-# Add the executable for the C++ node
-add_executable(placeholder_node src/placeholder_node.cpp)
-ament_target_dependencies(placeholder_node rclcpp std_msgs)
-
-# Install the C++ node executable
-install(TARGETS
-  placeholder_node
-  DESTINATION lib/${PROJECT_NAME}
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/MarkerList.msg"
+  "msg/Marker.msg"
+  DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
-
-# Install python nodes
-install(PROGRAMS
-  scripts/python_placeholder.py
-  scripts/pseodu_camera_delete.py
-  scripts/aruco_extractor_node.py
-  DESTINATION lib/${PROJECT_NAME})
-
-# Install Python launch files
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}/
-)
+# uncomment the following section in order to fill in
+# further dependencies manually.
+# find_package(<dependency> REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
